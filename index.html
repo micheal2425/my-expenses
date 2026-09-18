@@ -3,81 +3,332 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Expense Tracker</title>
+    <title>Pro Expense Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f9; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 500px; background: #fff; padding: 20px; margin: auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #4a90e2; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input, select { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-        button { background: #4a90e2; color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; font-size: 16px; cursor: pointer; }
-        button:hover { background: #357abd; }
-        .total { font-size: 18px; font-weight: bold; margin-top: 20px; text-align: right; }
-        ul { list-style: none; padding: 0; margin-top: 20px; }
-        li { background: #fafafa; padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .delete-btn { background: #ff5c5c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        .delete-btn:hover { background: #e04141; }
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --danger: #ef4444;
+            --success: #22c55e;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--bg-color);
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .budget-setup {
+            font-size: 13px;
+            color: var(--text-muted);
+            background: #f1f5f9;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--bg-color);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .stat-card span {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .stat-card strong {
+            font-size: 18px;
+            color: var(--text-main);
+        }
+
+        .progress-container {
+            background: var(--border);
+            border-radius: 8px;
+            height: 10px;
+            width: 100%;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            transition: width 0.4s ease, background 0.4s ease;
+        }
+
+        .controls-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fff;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: #10b981;
+            margin-top: 10px;
+        }
+        .btn-secondary:hover {
+            background: #059669;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 25px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        li {
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .expense-info div:first-child {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .expense-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        .badge {
+            background: #e0e7ff;
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: var(--danger);
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .delete-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Expense Tracker</h2>
-    
-    <div class="form-group">
-        <label for="filterMonth">View Month:</label>
-        <select id="filterMonth" onchange="renderExpenses()">
-            <option value="All">All Months</option>
-            <option value="01">January</option>
-            <option value="02">February</option>
-            <option value="03">March</option>
-            <option value="04">April</option>
-            <option value="05">May</option>
-            <option value="06">June</option>
-            <option value="07">July</option>
-            <option value="08">August</option>
-            <option value="09">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-        </select>
+    <header>
+        <h2>💼 My Expense Tracker</h2>
+        <div class="budget-setup" onclick="setMonthlyBudget()">Budget: ₹<span id="budgetValue">10000</span> ⚙️</div>
+    </header>
+
+    <!-- Visual Stats Overview -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span>Spent</span>
+            <strong id="statSpent">₹0</strong>
+        </div>
+        <div class="stat-card">
+            <span>Remaining</span>
+            <strong id="statRemaining">₹10000</strong>
+        </div>
+        <div class="stat-card">
+            <span>Transactions</span>
+            <strong id="statCount">0</strong>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label for="expenseDesc">Description:</label>
-        <input type="text" id="expenseDesc" placeholder="e.g., Lunch, Bus fare">
+    <!-- Budget Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
     </div>
 
-    <div class="form-group">
-        <label for="expenseAmount">Amount (₹):</label>
-        <input type="number" id="expenseAmount" placeholder="e.g., 150">
+    <!-- Filters & Input Section -->
+    <div class="controls-row">
+        <div class="form-group" style="margin-bottom:0;">
+            <label for="filterMonth">Filter Month</label>
+            <select id="filterMonth" onchange="renderApp()">
+                <option value="All">All Months</option>
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+            <label for="expenseCategory">Category</label>
+            <select id="expenseCategory">
+                <option value="Food">🍔 Food</option>
+                <option value="Travel">🚗 Travel</option>
+                <option value="Studies">📚 Studies</option>
+                <option value="Shopping">🛍️ Shopping</option>
+                <option value="Other">📦 Other</option>
+            </select>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label for="expenseDate">Date:</label>
-        <input type="date" id="expenseDate">
+    <div style="margin-top: 15px;">
+        <div class="form-group">
+            <label for="expenseDesc">Description</label>
+            <input type="text" id="expenseDesc" placeholder="e.g., College Books, Lunch">
+        </div>
+
+        <div class="controls-row">
+            <div class="form-group" style="margin-bottom:0;">
+                <label for="expenseAmount">Amount (₹)</label>
+                <input type="number" id="expenseAmount" placeholder="e.g., 250">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+                <label for="expenseDate">Date</label>
+                <input type="date" id="expenseDate">
+            </div>
+        </div>
     </div>
 
-    <button onclick="addExpense()">Add Expense</button>
-
-    <div class="total">
-        Total: ₹<span id="totalAmount">0</span>
-    </div>
+    <button class="btn" style="margin-top: 15px;" onclick="addExpense()">Add Expense</button>
+    <button class="btn btn-secondary" onclick="exportToCSV()">📥 Download Monthly Report (CSV)</button>
 
     <ul id="expenseList"></ul>
 </div>
 
 <script>
-    // Set today's date automatically on load
     document.getElementById('expenseDate').valueAsDate = new Date();
+    
+    let expenses = JSON.parse(localStorage.getItem('pro_expenses')) || [];
+    let monthlyBudget = localStorage.getItem('pro_budget') ? parseFloat(localStorage.getItem('pro_budget')) : 10000;
+    
+    document.getElementById('budgetValue').textContent = monthlyBudget;
 
-    let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    function setMonthlyBudget() {
+        const newBudget = prompt("Enter your monthly budget limit (₹):", monthlyBudget);
+        if (newBudget !== null && !isNaN(newBudget) && newBudget > 0) {
+            monthlyBudget = parseFloat(newBudget);
+            localStorage.setItem('pro_budget', monthlyBudget);
+            document.getElementById('budgetValue').textContent = monthlyBudget;
+            renderApp();
+        }
+    }
 
     function addExpense() {
-        const desc = document.getElementById('expenseDesc').value;
+        const desc = document.getElementById('expenseDesc').value.trim();
         const amount = document.getElementById('expenseAmount').value;
         const date = document.getElementById('expenseDate').value;
+        const category = document.getElementById('expenseCategory').value;
 
         if (!desc || !amount || !date) {
             alert('Please fill in all fields!');
@@ -88,54 +339,101 @@
             id: Date.now(),
             desc,
             amount: parseFloat(amount),
-            date
+            date,
+            category
         };
 
         expenses.push(expense);
-        localStorage.setItem('expenses', JSON.stringify(expenses));
+        localStorage.setItem('pro_expenses', JSON.stringify(expenses));
 
-        // Clear fields
         document.getElementById('expenseDesc').value = '';
         document.getElementById('expenseAmount').value = '';
         document.getElementById('expenseDate').valueAsDate = new Date();
 
-        renderExpenses();
+        renderApp();
     }
 
     function deleteExpense(id) {
         expenses = expenses.filter(exp => exp.id !== id);
-        localStorage.setItem('expenses', JSON.stringify(expenses));
-        renderExpenses();
+        localStorage.setItem('pro_expenses', JSON.stringify(expenses));
+        renderApp();
     }
 
-    function renderExpenses() {
+    function exportToCSV() {
+        const selectedMonth = document.getElementById('filterMonth').value;
+        const filtered = expenses.filter(exp => {
+            if (selectedMonth === 'All') return true;
+            return exp.date.split('-')[1] === selectedMonth;
+        });
+
+        if (filtered.length === 0) {
+            alert("No expenses found for the selected view to export!");
+            return;
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,Date,Category,Description,Amount (INR)\n";
+        filtered.forEach(e => {
+            csvContent += `"${e.date}","${e.category}","${e.desc}",${e.amount}\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Expense_Report_${selectedMonth}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function renderApp() {
         const list = document.getElementById('expenseList');
-        const totalSpan = document.getElementById('totalAmount');
         const selectedMonth = document.getElementById('filterMonth').value;
         
         list.innerHTML = '';
-        let total = 0;
+        let totalSpent = 0;
 
-        const filteredExpenses = expenses.filter(exp => {
+        const filtered = expenses.filter(exp => {
             if (selectedMonth === 'All') return true;
-            const expMonth = exp.date.split('-')[1]; // Extracts MM from YYYY-MM-DD
-            return expMonth === selectedMonth;
+            return exp.date.split('-')[1] === selectedMonth;
         });
 
-        filteredExpenses.forEach(exp => {
-            total += exp.amount;
+        filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        filtered.forEach(exp => {
+            totalSpent += exp.amount;
             const li = document.createElement('li');
             li.innerHTML = `
-                <span><strong>${exp.date}</strong> - ${exp.desc}: ₹${exp.amount.toFixed(2)}</span>
-                <button class="delete-btn" onclick="deleteExpense(${exp.id})">X</button>
+                <div class="expense-info">
+                    <div>${exp.desc} <span class="badge">${exp.category}</span></div>
+                    <div class="expense-meta">📅 ${exp.date} &nbsp;|&nbsp; ₹${exp.amount.toFixed(2)}</div>
+                </div>
+                <button class="delete-btn" onclick="deleteExpense(${exp.id})">Delete</button>
             `;
             list.appendChild(li);
         });
 
-        totalSpan.textContent = total.toFixed(2);
+        // Update stats
+        const remaining = monthlyBudget - totalSpent;
+        document.getElementById('statSpent').textContent = `₹${totalSpent.toFixed(0)}`;
+        document.getElementById('statRemaining').textContent = `₹${remaining.toFixed(0)}`;
+        document.getElementById('statCount').textContent = filtered.length;
+
+        // Progress bar calculation
+        const progressBar = document.getElementById('progressBar');
+        let percentage = (totalSpent / monthlyBudget) * 100;
+        if (percentage > 100) percentage = 100;
+        progressBar.style.width = percentage + '%';
+
+        if (percentage >= 90) {
+            progressBar.style.background = 'var(--danger)';
+        } else if (percentage >= 75) {
+            progressBar.style.background = '#f59e0b';
+        } else {
+            progressBar.style.background = 'var(--success)';
+        }
     }
 
-    renderExpenses();
+    renderApp();
 </script>
 
 </body>
