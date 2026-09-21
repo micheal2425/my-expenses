@@ -3,36 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Expense Tracker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Dynamic Expense Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --danger: #ef4444;
-            --success: #22c55e;
+            --color-bg: #0f172a; /* Deep Navy */
+            --color-card: #ffffff;
+            --color-text-main: #1e293b;
+            --color-text-muted: #64748b;
+            --color-primary: #10b981; /* Emerald Green */
+            --color-primary-dark: #059669;
+            --color-accent: #6366f1; /* Indigo */
+            --color-danger: #ef4444;
+            --color-border: #e2e8f0;
+            --shadow-soft: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-color);
-            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text-main);
             margin: 0;
             padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding-bottom: 80px; /* Space for floating button */
         }
 
         .container {
+            width: 100%;
             max-width: 600px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
         }
 
         header {
@@ -40,196 +42,285 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 25px;
-            border-bottom: 2px solid var(--bg-color);
-            padding-bottom: 15px;
+            color: white;
         }
 
         h2 {
             margin: 0;
-            color: var(--primary);
-            font-size: 24px;
+            font-weight: 700;
+            font-size: 28px;
+            letter-spacing: -0.5px;
         }
 
-        .budget-setup {
+        .budget-link {
             font-size: 13px;
-            color: var(--text-muted);
-            background: #f1f5f9;
-            padding: 5px 10px;
-            border-radius: 6px;
+            color: rgba(255,255,255,0.8);
+            background: rgba(255,255,255,0.1);
+            padding: 6px 12px;
+            border-radius: 20px;
             cursor: pointer;
-            border: 1px solid var(--border);
+            transition: background 0.2s;
         }
+        .budget-link:hover { background: rgba(255,255,255,0.2); }
 
+        /* Stat Cards Styling */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            gap: 15px;
             margin-bottom: 25px;
         }
 
         .stat-card {
-            background: var(--bg-color);
-            padding: 15px;
-            border-radius: 12px;
+            background: var(--color-card);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
             text-align: center;
-            border: 1px solid var(--border);
         }
 
         .stat-card span {
             display: block;
             font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 5px;
+            color: var(--color-text-muted);
             font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
         }
 
         .stat-card strong {
-            font-size: 18px;
-            color: var(--text-main);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--color-text-main);
         }
 
+        /* Progress Bar */
         .progress-container {
-            background: var(--border);
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
             height: 10px;
             width: 100%;
             margin-bottom: 25px;
             overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .progress-bar {
             height: 100%;
-            background: var(--success);
+            background: var(--color-primary);
             width: 0%;
             transition: width 0.4s ease, background 0.4s ease;
         }
 
-        .controls-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+        .filter-row {
+            background: var(--color-card);
+            padding: 15px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
             margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
         }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
+        .filter-group { flex: 1; }
         label {
             display: block;
             margin-bottom: 6px;
             font-weight: 600;
-            font-size: 13px;
-            color: var(--text-muted);
+            font-size: 12px;
+            color: var(--color-text-muted);
         }
-
-        input, select {
+        select {
             width: 100%;
-            padding: 12px;
-            box-sizing: border-box;
-            border: 1px solid var(--border);
+            padding: 10px;
+            border: 1px solid var(--color-border);
             border-radius: 8px;
             font-size: 14px;
-            background: #fff;
-            transition: border-color 0.2s;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px;
-            width: 100%;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
+            font-family: inherit;
+            background: #f8fafc;
             cursor: pointer;
-            transition: background 0.2s;
         }
 
-        .btn:hover {
-            background: var(--primary-hover);
-        }
-
-        .btn-secondary {
-            background: #10b981;
-            margin-top: 10px;
-        }
-        .btn-secondary:hover {
-            background: #059669;
-        }
-
-        ul {
-            list-style: none;
-            padding: 0;
-            margin-top: 25px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
+        /* Expense List Styling */
+        ul { list-style: none; padding: 0; margin: 0; }
 
         li {
-            background: #fff;
-            border: 1px solid var(--border);
-            padding: 14px;
-            border-radius: 10px;
-            margin-bottom: 10px;
+            background: var(--color-card);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            transition: transform 0.2s;
+            border: 1px solid transparent;
+        }
+        li:hover {
+            transform: translateX(3px);
+            border-color: #e0e7ff;
         }
 
-        .expense-info div:first-child {
+        .expense-title {
             font-weight: 600;
             font-size: 15px;
+            color: var(--color-text-main);
+            display: flex;
+            align-items: center;
         }
 
         .expense-meta {
             font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 3px;
+            color: var(--color-text-muted);
+            margin-top: 4px;
         }
 
-        .badge {
-            background: #e0e7ff;
-            color: var(--primary);
-            padding: 2px 8px;
+        .cat-badge {
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 3px 7px;
             border-radius: 4px;
-            font-size: 11px;
-            font-weight: 600;
-            margin-left: 6px;
+            margin-left: 8px;
+            background: #e0e7ff;
+            color: var(--color-accent);
         }
 
         .delete-btn {
-            background: #fee2e2;
-            color: var(--danger);
+            background: transparent;
             border: none;
-            padding: 6px 10px;
-            border-radius: 6px;
+            color: var(--color-danger);
+            opacity: 0.6;
             cursor: pointer;
-            font-weight: 600;
             font-size: 12px;
+            padding: 5px;
+            transition: opacity 0.2s;
         }
-        .delete-btn:hover {
-            background: var(--danger);
+        li:hover .delete-btn { opacity: 1; }
+
+        /* Floating Action Button (FAB) */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--color-primary);
             color: white;
+            border: none;
+            font-size: 30px;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.2s;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 300;
         }
+        .fab:hover { background: var(--color-primary-dark); transform: rotate(90deg); }
+
+        /* The Popup Overlay & Form */
+        .popup-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: flex-end; /* Aligns popup to bottom */
+        }
+
+        .popup-content {
+            background: var(--color-card);
+            width: 100%;
+            max-width: 640px;
+            border-radius: 24px 24px 0 0; /* Rounded top corners */
+            padding: 30px;
+            padding-bottom: 40px;
+            transform: translateY(100%); /* Starts hidden below screen */
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 0 -10px 25px rgba(0,0,0,0.1);
+        }
+
+        .popup-overlay.active { display: flex; }
+        .popup-overlay.active .popup-content { transform: translateY(0); }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .popup-header h3 { margin: 0; font-size: 20px; }
+        .close-popup {
+            background: #f1f5f9; border: none; width: 36px; height: 36px;
+            border-radius: 50%; cursor: pointer; font-weight: bold;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group.full { grid-column: span 2; }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #f8fafc;
+        }
+        .form-input:focus { outline: none; border-color: var(--color-accent); }
+
+        .submit-btn {
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .submit-btn:hover { background: #4f46e5; }
+        
+        .export-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .export-btn:hover { background: var(--color-primary-dark); }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h2>💼 My Expense Tracker</h2>
-        <div class="budget-setup" onclick="setMonthlyBudget()">Budget: ₹<span id="budgetValue">10000</span> ⚙️</div>
+        <h2>💰 Cashflow</h2>
+        <div class="budget-link" onclick="setMonthlyBudget()">Budget: ₹<span id="budgetValue">15000</span> ⚙️</div>
     </header>
 
-    <!-- Visual Stats Overview -->
     <div class="stats-grid">
         <div class="stat-card">
             <span>Spent</span>
@@ -237,23 +328,21 @@
         </div>
         <div class="stat-card">
             <span>Remaining</span>
-            <strong id="statRemaining">₹10000</strong>
+            <strong id="statRemaining" style="color: var(--color-primary);">₹15000</strong>
         </div>
         <div class="stat-card">
-            <span>Transactions</span>
+            <span>Items</span>
             <strong id="statCount">0</strong>
         </div>
     </div>
 
-    <!-- Budget Progress Bar -->
     <div class="progress-container">
         <div class="progress-bar" id="progressBar"></div>
     </div>
 
-    <!-- Filters & Input Section -->
-    <div class="controls-row">
-        <div class="form-group" style="margin-bottom:0;">
-            <label for="filterMonth">Filter Month</label>
+    <div class="filter-row">
+        <div class="filter-group">
+            <label for="filterMonth">Filter by Month</label>
             <select id="filterMonth" onchange="renderApp()">
                 <option value="All">All Months</option>
                 <option value="01">January</option>
@@ -270,171 +359,54 @@
                 <option value="12">December</option>
             </select>
         </div>
-        <div class="form-group" style="margin-bottom:0;">
-            <label for="expenseCategory">Category</label>
-            <select id="expenseCategory">
+        <div class="filter-group">
+            <label for="filterCategory">By Category</label>
+            <select id="filterCategory" onchange="renderApp()">
+                <option value="All">All Categories</option>
                 <option value="Food">🍔 Food</option>
                 <option value="Travel">🚗 Travel</option>
-                <option value="Studies">📚 Studies</option>
+                <option value="Bills">💡 Bills</option>
                 <option value="Shopping">🛍️ Shopping</option>
+                <option value="Studies">📚 Studies</option>
                 <option value="Other">📦 Other</option>
             </select>
         </div>
     </div>
 
-    <div style="margin-top: 15px;">
-        <div class="form-group">
-            <label for="expenseDesc">Description</label>
-            <input type="text" id="expenseDesc" placeholder="e.g., College Books, Lunch">
-        </div>
-
-        <div class="controls-row">
-            <div class="form-group" style="margin-bottom:0;">
-                <label for="expenseAmount">Amount (₹)</label>
-                <input type="number" id="expenseAmount" placeholder="e.g., 250">
-            </div>
-            <div class="form-group" style="margin-bottom:0;">
-                <label for="expenseDate">Date</label>
-                <input type="date" id="expenseDate">
-            </div>
-        </div>
-    </div>
-
-    <button class="btn" style="margin-top: 15px;" onclick="addExpense()">Add Expense</button>
-    <button class="btn btn-secondary" onclick="exportToCSV()">📥 Download Monthly Report (CSV)</button>
-
     <ul id="expenseList"></ul>
+
+    <!-- Download Report Button -->
+    <a href="#" class="export-btn" onclick="exportToCSV()">📥 Download Monthly CSV</a>
+
 </div>
 
-<script>
-    document.getElementById('expenseDate').valueAsDate = new Date();
-    
-    let expenses = JSON.parse(localStorage.getItem('pro_expenses')) || [];
-    let monthlyBudget = localStorage.getItem('pro_budget') ? parseFloat(localStorage.getItem('pro_budget')) : 10000;
-    
-    document.getElementById('budgetValue').textContent = monthlyBudget;
+<!-- Floating Action Button to trigger popup -->
+<button class="fab" onclick="openPopup()">+</button>
 
-    function setMonthlyBudget() {
-        const newBudget = prompt("Enter your monthly budget limit (₹):", monthlyBudget);
-        if (newBudget !== null && !isNaN(newBudget) && newBudget > 0) {
-            monthlyBudget = parseFloat(newBudget);
-            localStorage.setItem('pro_budget', monthlyBudget);
-            document.getElementById('budgetValue').textContent = monthlyBudget;
-            renderApp();
-        }
-    }
-
-    function addExpense() {
-        const desc = document.getElementById('expenseDesc').value.trim();
-        const amount = document.getElementById('expenseAmount').value;
-        const date = document.getElementById('expenseDate').value;
-        const category = document.getElementById('expenseCategory').value;
-
-        if (!desc || !amount || !date) {
-            alert('Please fill in all fields!');
-            return;
-        }
-
-        const expense = {
-            id: Date.now(),
-            desc,
-            amount: parseFloat(amount),
-            date,
-            category
-        };
-
-        expenses.push(expense);
-        localStorage.setItem('pro_expenses', JSON.stringify(expenses));
-
-        document.getElementById('expenseDesc').value = '';
-        document.getElementById('expenseAmount').value = '';
-        document.getElementById('expenseDate').valueAsDate = new Date();
-
-        renderApp();
-    }
-
-    function deleteExpense(id) {
-        expenses = expenses.filter(exp => exp.id !== id);
-        localStorage.setItem('pro_expenses', JSON.stringify(expenses));
-        renderApp();
-    }
-
-    function exportToCSV() {
-        const selectedMonth = document.getElementById('filterMonth').value;
-        const filtered = expenses.filter(exp => {
-            if (selectedMonth === 'All') return true;
-            return exp.date.split('-')[1] === selectedMonth;
-        });
-
-        if (filtered.length === 0) {
-            alert("No expenses found for the selected view to export!");
-            return;
-        }
-
-        let csvContent = "data:text/csv;charset=utf-8,Date,Category,Description,Amount (INR)\n";
-        filtered.forEach(e => {
-            csvContent += `"${e.date}","${e.category}","${e.desc}",${e.amount}\n`;
-        });
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `Expense_Report_${selectedMonth}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-    function renderApp() {
-        const list = document.getElementById('expenseList');
-        const selectedMonth = document.getElementById('filterMonth').value;
+<!-- The Popup Form Overlay -->
+<div class="popup-overlay" id="expensePopup">
+    <div class="popup-content">
+        <div class="popup-header">
+            <h3>Add New Expense</h3>
+            <button class="close-popup" onclick="closePopup()">✕</button>
+        </div>
         
-        list.innerHTML = '';
-        let totalSpent = 0;
+        <div class="form-grid">
+            <div class="form-group full">
+                <label for="expenseDesc">Description</label>
+                <input type="text" id="expenseDesc" class="form-input" placeholder="e.g., College Lunch, Metro Pass" required>
+            </div>
 
-        const filtered = expenses.filter(exp => {
-            if (selectedMonth === 'All') return true;
-            return exp.date.split('-')[1] === selectedMonth;
-        });
-
-        filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        filtered.forEach(exp => {
-            totalSpent += exp.amount;
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <div class="expense-info">
-                    <div>${exp.desc} <span class="badge">${exp.category}</span></div>
-                    <div class="expense-meta">📅 ${exp.date} &nbsp;|&nbsp; ₹${exp.amount.toFixed(2)}</div>
-                </div>
-                <button class="delete-btn" onclick="deleteExpense(${exp.id})">Delete</button>
-            `;
-            list.appendChild(li);
-        });
-
-        // Update stats
-        const remaining = monthlyBudget - totalSpent;
-        document.getElementById('statSpent').textContent = `₹${totalSpent.toFixed(0)}`;
-        document.getElementById('statRemaining').textContent = `₹${remaining.toFixed(0)}`;
-        document.getElementById('statCount').textContent = filtered.length;
-
-        // Progress bar calculation
-        const progressBar = document.getElementById('progressBar');
-        let percentage = (totalSpent / monthlyBudget) * 100;
-        if (percentage > 100) percentage = 100;
-        progressBar.style.width = percentage + '%';
-
-        if (percentage >= 90) {
-            progressBar.style.background = 'var(--danger)';
-        } else if (percentage >= 75) {
-            progressBar.style.background = '#f59e0b';
-        } else {
-            progressBar.style.background = 'var(--success)';
-        }
-    }
-
-    renderApp();
-</script>
-
-</body>
-</html>
+            <div class="form-group">
+                <label for="expenseAmount">Amount (₹)</label>
+                <input type="number" id="expenseAmount" class="form-input" placeholder="250" required>
+            </div>
+            <div class="form-group">
+                <label for="expenseDate">Date</label>
+                <input type="date" id="expenseDate" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label for="expenseCategory">Category</label>
+                <select id="expenseCategory" class="form-input">
+                    <option value="Food">🍔 Food</option>
+                    <option value="Travel">🚗 Travel
